@@ -25,6 +25,7 @@ function Ball(cx, cy, xSpeed, ySpeed, radius)
 }
 
 var ball = new Ball(200, 200, 10, 10, 10);
+//var ballBounds = new BallBounds(0 + ball.radius, canvasHeight - ball.radius, 0 + ball.radius, canvasWidth - ball.radius);
 var ballBounds = new BallBounds(0, canvasHeight, 0, canvasWidth);
 
 function redrawBall() 
@@ -45,14 +46,33 @@ function redrawBall()
 
 function setNextBallLocation(ball)
 {
-    if (ball.cx > ballBounds.edgeRight || ball.cx < ballBounds.edgeLeft)
+
+    if (ball.cx + ball.radius >= ballBounds.edgeRight || ball.cx - ball.radius <= ballBounds.edgeLeft)
         ball.xSpeed = -ball.xSpeed;
 
-    if (ball.cy > ballBounds.edgeDown || ball.cy < ballBounds.edgeUp)
+    if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.ySpeed = -ball.ySpeed;
 
     ball.cx += ball.xSpeed;
     ball.cy += ball.ySpeed;
+
+    // if (ball.radius < 45)
+    //     ball.radius++;
+    // else
+    //     ball.radius = 10;
+
+    // at this point, we may have exceeded the ball bounds. Thus, if we have, then meet the edge exactly.
+    if (ball.cx + ball.radius >= ballBounds.edgeRight)
+        ball.cx = ballBounds.edgeRight - ball.radius;
+
+    if (ball.cx - ball.radius <= ballBounds.edgeLeft)
+        ball.cx = ballBounds.edgeLeft + ball.radius;
+
+    if (ball.cy + ball.radius >= ballBounds.edgeDown)
+        ball.cy = ballBounds.edgeDown - ball.radius;
+
+    if (ball.cy - ball.radius <= ballBounds.edgeUp)
+        ball.cy = ballBounds.edgeUp + ball.radius;
 }
 
 function onTimer() // called every timerDelay millis
