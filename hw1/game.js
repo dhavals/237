@@ -109,19 +109,23 @@ function updatePaddles()
     {
         if (keysPressed[key] === 38) // up arrow / player2 up
         {
-            movePaddleUp(paddle2);
+            if(paddle2.cy - paddle2.radius>= 0) // added these so the paddles don't out of bounds
+                movePaddleUp(paddle2);
         }
         if (keysPressed[key] === 40) // down arrow / player2 down
         {
-            movePaddleDown(paddle2);
+            if(paddle2.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
+                movePaddleDown(paddle2);
         }
         if (keysPressed[key] === 87) // w / player1 up
         {
-            movePaddleUp(paddle1);
+            if(paddle1.cy - paddle1.radius>= 0)
+                movePaddleUp(paddle1);
         }
         if (keysPressed[key] === 83) // s / player1 down
         {
-            movePaddleDown(paddle1);
+            if(paddle1.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
+                movePaddleDown(paddle1);
         }
     };
 }
@@ -136,8 +140,22 @@ function movePaddleDown(paddle)
     paddle.cy += 5;
 }
 
+function isTouching() // checks if the ball is touching the paddles
+{
+    if(ball.cx === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
+            return true;
+    }
 
-function setNextBallLocation(ball)
+    if(ball.cx === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
+            return true;
+    }
+   
+    return false;
+}  
+
+function setNextBallLocation(ball, paddle1, paddle2)
 {
 
     if (ball.cx + ball.radius >= ballBounds.edgeRight || ball.cx - ball.radius <= ballBounds.edgeLeft)
@@ -146,6 +164,9 @@ function setNextBallLocation(ball)
     if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.ySpeed = -ball.ySpeed;
 
+    if(isTouching()) // so the the balls bounce off the paddles
+        ball.xSpeed = -ball.xSpeed;
+    
     ball.cx += ball.xSpeed;
     ball.cy += ball.ySpeed;
 
@@ -161,6 +182,9 @@ function setNextBallLocation(ball)
 
     if (ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.cy = ballBounds.edgeUp + ball.radius;
+
+    
+
 }
 
 function onTimer() // called every timerDelay millis
