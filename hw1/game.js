@@ -37,10 +37,18 @@ function Paddle(cx, cy, width, height, radius, name)
     this.name = name;
 }
 
+function Player()
+{
+    this.score = 0;
+}
+
 var ball = new Ball(200, 200, 4, 4, 10);
 var ballBounds = new BallBounds(0, canvasHeight, 0, canvasWidth);
 var paddle1 = new Paddle(20, (canvasHeight/2) - 50, 10, 100, 5, "one");
 var paddle2 = new Paddle(canvasWidth - 25 - 5, (canvasHeight/2) - 50, 10, 100, 5, "two");
+var player1 = new Player();
+var player2 = new Player();
+
 
 function redrawAll()
 {
@@ -49,6 +57,7 @@ function redrawAll()
     
     redrawBall();
     redrawPaddles();
+    redrawScore();
 }
 
 
@@ -87,6 +96,18 @@ function redrawPaddles()
 
     roundedRect(ctx, paddle1.cx, paddle1.cy, paddle1.paddleWidth, paddle1.paddleHeight, paddle1.radius, "blue");
     roundedRect(ctx, paddle2.cx, paddle2.cy, paddle2.paddleWidth, paddle2.paddleHeight, paddle2.radius, "red");
+}
+
+function redrawScore()
+{
+    var player1score = "" + player1.score;
+    var player2score = "" + player2.score;
+
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+
+    ctx.strokeText(player1score, canvasWidth/2 - 50, 50);
+    ctx.strokeText(player2score, canvasWidth/2 + 20, 50);
 }
 
 function onKeyDown(event)
@@ -155,12 +176,28 @@ function isTouching() // checks if the ball is touching the paddles
     return false;
 }  
 
+function isScore(ball) // checks if the ball has left the board and places it back in the center
+{
+    if (ball.cx + ball.radius >= ballBounds.edgeRight){
+        player1.score += 1;
+        console.log(" Player 1 scored!");
+        ball.cx = canvasWidth/2;
+        ball.cy = canvasHeight/2;
+        ball.xSpeed = 4;
+    }
+    
+    if (ball.cx - ball.radius <= ballBounds.edgeLeft){
+        player2.score += 1;
+        console.log("Player 2 scored!");
+        ball.cx = canvasWidth/2;
+        ball.cy = canvasHeight/2;
+        ball.xSpeed = -4;
+    }
+}
+
+
 function setNextBallLocation(ball, paddle1, paddle2)
 {
-
-    if (ball.cx + ball.radius >= ballBounds.edgeRight || ball.cx - ball.radius <= ballBounds.edgeLeft)
-        ball.xSpeed = -ball.xSpeed;
-
     if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.ySpeed = -ball.ySpeed;
 
@@ -194,19 +231,20 @@ function setNextBallLocation(ball, paddle1, paddle2)
         if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
             ball.cx = paddle2.cx - ball.radius;
     }
-   
-
-    
 
 }
 
 function onTimer() // called every timerDelay millis
 {
+
+    isScore(ball);
     // first find out the new coordinates of where to draw the ball
     setNextBallLocation(ball, paddle1, paddle2);
     updatePaddles();
     // then redraw it at that place
     redrawAll();
+
+
 }
 
 function run() 
