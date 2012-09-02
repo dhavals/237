@@ -142,12 +142,12 @@ function movePaddleDown(paddle)
 
 function isTouching() // checks if the ball is touching the paddles
 {
-    if(ball.cx === (paddle1.cx + paddle1.paddleWidth)){
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
         if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
             return true;
     }
 
-    if(ball.cx === paddle2.cx){
+    if((ball.cx + ball.radius) === paddle2.cx){
         if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
             return true;
     }
@@ -183,6 +183,19 @@ function setNextBallLocation(ball, paddle1, paddle2)
     if (ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.cy = ballBounds.edgeUp + ball.radius;
 
+
+    // at this point, if the ball is inside the paddle, make it touch the paddle edge exactly. 
+    if(((ball.cx - ball.radius) < (paddle1.cx + paddle1.paddleWidth)) && ((ball.cx - ball.radius) > paddle1.cx)){
+        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
+            ball.cx = paddle1.cx + paddle1.paddleWidth + ball.radius;
+    }
+
+    if((ball.cx + ball.radius) > paddle2.cx && (ball.cx + ball.radius) < (paddle2.cx + paddle2.paddleWidth)){
+        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
+            ball.cx = paddle2.cx - ball.radius;
+    }
+   
+
     
 
 }
@@ -190,7 +203,7 @@ function setNextBallLocation(ball, paddle1, paddle2)
 function onTimer() // called every timerDelay millis
 {
     // first find out the new coordinates of where to draw the ball
-    setNextBallLocation(ball);
+    setNextBallLocation(ball, paddle1, paddle2);
     updatePaddles();
     // then redraw it at that place
     redrawAll();
