@@ -6,6 +6,8 @@ var canvasHeight = canvas.height;
 
 var intervalId;
 var timerDelay = 10;
+var pressedKeys = [];
+
 
 function BallBounds(edgeUp, edgeDown, edgeLeft, edgeRight)
 {
@@ -25,24 +27,69 @@ function Ball(cx, cy, xSpeed, ySpeed, radius)
 }
 
 var ball = new Ball(200, 200, 10, 10, 10);
-//var ballBounds = new BallBounds(0 + ball.radius, canvasHeight - ball.radius, 0 + ball.radius, canvasWidth - ball.radius);
 var ballBounds = new BallBounds(0, canvasHeight, 0, canvasWidth);
 
-function redrawBall() 
+
+
+function redrawAll()
 {
     // erase everything -- not efficient, but simple
     ctx.clearRect(0, 0, 800, 400);
     
+    redrawBall();
+    redrawPaddles();
+}
+
+
+function redrawBall() 
+{    
     function drawCircle(ctx, cx, cy, radius) 
     {
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, 2*Math.PI, true);
         ctx.closePath();
+        ctx.fillStyle = "black";
         ctx.fill();
     }
 
     drawCircle(ctx, ball.cx, ball.cy, ball.radius);
 } 
+
+
+function redrawPaddles()
+{
+    function roundedRect(ctx, x, y, width, height, radius, color)
+    {
+        ctx.beginPath();
+        ctx.moveTo(x,y+radius);
+        ctx.lineTo(x,y+height-radius);
+        ctx.quadraticCurveTo(x,y+height,x+radius,y+height);
+        ctx.lineTo(x+width-radius,y+height);
+        ctx.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+        ctx.lineTo(x+width,y+radius);
+        ctx.quadraticCurveTo(x+width,y,x+width-radius,y);
+        ctx.lineTo(x+radius,y);
+        ctx.quadraticCurveTo(x,y,x,y+radius);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+    roundedRect(ctx, 20, (canvasHeight/2) - 50, 10, 100, 5, "blue");
+    roundedRect(ctx, canvasWidth - 25 - 5, (canvasHeight/2) - 50, 10, 100, 5, "red");
+}
+
+function onKeyDown(event)
+{
+    pressedKeys[event.keyCode] = true;
+}
+
+
+function onKeyUp(event)
+{
+    pressedKeys[event.keyCode] = false;
+}
+
+
+
 
 function setNextBallLocation(ball)
 {
@@ -55,11 +102,6 @@ function setNextBallLocation(ball)
 
     ball.cx += ball.xSpeed;
     ball.cy += ball.ySpeed;
-
-    // if (ball.radius < 45)
-    //     ball.radius++;
-    // else
-    //     ball.radius = 10;
 
     // at this point, we may have exceeded the ball bounds. Thus, if we have, then meet the edge exactly.
     if (ball.cx + ball.radius >= ballBounds.edgeRight)
@@ -80,7 +122,7 @@ function onTimer() // called every timerDelay millis
     // first find out the new coordinates of where to draw the ball
     setNextBallLocation(ball);
     // then redraw it at that place
-    redrawBall();
+    redrawAll();
 }
 
 function run() 
