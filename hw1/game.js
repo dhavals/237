@@ -49,6 +49,7 @@ var paddle2 = new Paddle(canvasWidth - 25 - 5, (canvasHeight/2) - 50, 10, 100, 5
 var player1 = new Player();
 var player2 = new Player();
 var maxSpeed = 10;
+var minSpeed = 3;
 
 function redrawAll()
 {
@@ -153,12 +154,12 @@ function updatePaddles()
 
 function movePaddleUp(paddle)
 {
-    paddle.cy -= 5;
+    paddle.cy -= 7;
 }
 
 function movePaddleDown(paddle)
 {
-    paddle.cy += 5;
+    paddle.cy += 7;
 }
 
 
@@ -169,8 +170,8 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         console.log(" Player 1 scored!");
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
-        ball.xSpeed = 4;
-	ball.ySpeed = 4;
+        ball.xSpeed = -Math.floor((Math.random() * 3) + 3);
+	ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random())) ;
     }
     
     if (ball.cx - ball.radius <= ballBounds.edgeLeft){
@@ -178,8 +179,8 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         console.log("Player 2 scored!");
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
-        ball.xSpeed = -4;
-	ball.ySpeed = -4;
+        ball.xSpeed = Math.floor((Math.random() * 3) + 3);
+	ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random()));
     }
 }
 
@@ -217,9 +218,14 @@ function isTouching() // checks if the ball is touching the paddles
 
 function bounceEdge()
 {
-
-    ball.xSpeed = -ball.xSpeed;
-    ball.ySpeed = -ball.ySpeed;
+    // I thought that given the bounceMiddle(), it was fair that the ySpeed should increase too(?) 
+    // You can change this back if you don't like it :D
+    if(Math.abs(ball.xSpeed * 0.7) > minSpeed) {
+	ball.xSpeed = -0.7*ball.xSpeed;
+    } else {
+        ball.xSpeed = -ball.xSpeed;
+    }
+    ball.ySpeed = -1.3*ball.ySpeed;
 }
 
 function bounceCenter()
@@ -230,7 +236,7 @@ function bounceCenter()
 function bounceMiddle()
 {
     // I gave the ball a maximum xSpeed because when the ball became too fast, it went through the paddle
-    if (ball.xSpeed*1.3 < maxSpeed) {
+    if (Math.abs(ball.xSpeed*1.3) < maxSpeed) {
 	ball.xSpeed = -ball.xSpeed * 1.3;
     } else {
         ball.xSpeed = -ball.xSpeed;
