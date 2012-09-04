@@ -15,7 +15,7 @@ function BallBounds(edgeUp, edgeDown, edgeLeft, edgeRight)
     this.edgeUp = edgeUp;
     this.edgeDown = edgeDown;
     this.edgeLeft = edgeLeft;
-    this.edgeRight = edgeRight;
+     this.edgeRight = edgeRight;
 }
 
 function Ball(cx, cy, xSpeed, ySpeed, radius)
@@ -161,20 +161,6 @@ function movePaddleDown(paddle)
     paddle.cy += 5;
 }
 
-function isTouching() // checks if the ball is touching the paddles
-{
-    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
-        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
-            return true;
-    }
-
-    if((ball.cx + ball.radius) === paddle2.cx){
-        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
-            return true;
-    }
-   
-    return false;
-}  
 
 function isScore(ball) // checks if the ball has left the board and places it back in the center
 {
@@ -196,14 +182,156 @@ function isScore(ball) // checks if the ball has left the board and places it ba
 }
 
 
+
+function isTouching() // checks if the ball is touching the paddles
+{
+    // if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+    //     if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
+    //         return true;
+    // }
+
+    // if((ball.cx + ball.radius) === paddle2.cx){
+    //     if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
+    //         return true;
+    // }
+   
+    // return false;
+
+
+
+    if (touchingTop() === true)
+        return true;
+    if (touchingMiddleUp() == true)
+        return true;
+    if (touchingCenter() == true)
+        return true;
+    if (touchingMiddleDown() == true)
+        return true;
+    if (touchingBottom() == true)
+        return true;
+
+    return false;
+}  
+
+function bounceEdge()
+{
+
+    ball.xSpeed = -ball.xSpeed;
+    ball.ySpeed = -ball.ySpeed;
+}
+
+function bounceCenter()
+{
+    ball.xSpeed = -ball.xSpeed;
+}
+
+function bounceMiddle()
+{
+    ball.xSpeed = -ball.xSpeed * 1.3;
+    ball.ySpeed = ball.ySpeed * 0.7;
+}
+
+function touchingTop()
+{
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.2)) && ball.cy >= paddle1.cy)
+            return true;
+    }
+
+    if((ball.cx + ball.radius) === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.2)) && ball.cy >= paddle2.cy)
+            return true;
+    }
+   
+    return false;
+}
+
+function touchingMiddleUp()
+{
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.4)) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.2)))
+            return true;
+    }
+
+    if((ball.cx + ball.radius) === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.4)) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.2)))
+            return true;
+    }
+   
+    return false;
+}
+
+
+function touchingCenter()
+{
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.6)) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.4)))
+            return true;
+    }
+
+    if((ball.cx + ball.radius) === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.6)) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.4)))
+            return true;
+    }
+   
+    return false;
+}
+
+function touchingMiddleDown()
+{
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.8)) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.6)))
+            return true;
+    }
+
+    if((ball.cx + ball.radius) === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.8)) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.6)))
+            return true;
+    }
+   
+    return false;
+}
+
+
+function touchingBottom()
+{
+    if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
+        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.8)))
+            return true;
+    }
+
+    if((ball.cx + ball.radius) === paddle2.cx){
+        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.8)))
+            return true;
+    }
+   
+    return false;
+}
+
+
+
+
+
+
+
+
 function setNextBallLocation(ball, paddle1, paddle2)
 {
     if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
         ball.ySpeed = -ball.ySpeed;
 
-    if(isTouching()) // so the the balls bounce off the paddles
-        ball.xSpeed = -ball.xSpeed;
+    // if(isTouching()) // so the the balls bounce off the paddles
+    //     ball.xSpeed = -ball.xSpeed;
     
+
+    if (touchingTop() || touchingBottom())
+        bounceEdge();
+    if (touchingCenter())
+        bounceCenter();
+    if (touchingMiddleDown() || touchingMiddleUp())
+        bounceMiddle();
+
+
     ball.cx += ball.xSpeed;
     ball.cy += ball.ySpeed;
 
