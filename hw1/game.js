@@ -48,7 +48,7 @@ var paddle1 = new Paddle(20, (canvasHeight/2) - 50, 10, 100, 5, "one");
 var paddle2 = new Paddle(canvasWidth - 25 - 5, (canvasHeight/2) - 50, 10, 100, 5, "two");
 var player1 = new Player();
 var player2 = new Player();
-
+var maxSpeed = 10;
 
 function redrawAll()
 {
@@ -170,6 +170,7 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
         ball.xSpeed = 4;
+	ball.ySpeed = 4;
     }
     
     if (ball.cx - ball.radius <= ballBounds.edgeLeft){
@@ -178,6 +179,7 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
         ball.xSpeed = -4;
+	ball.ySpeed = -4;
     }
 }
 
@@ -227,7 +229,12 @@ function bounceCenter()
 
 function bounceMiddle()
 {
-    ball.xSpeed = -ball.xSpeed * 1.3;
+    // I gave the ball a maximum xSpeed because when the ball became too fast, it went through the paddle
+    if (ball.xSpeed*1.3 < maxSpeed) {
+	ball.xSpeed = -ball.xSpeed * 1.3;
+    } else {
+        ball.xSpeed = -ball.xSpeed;
+    }
     ball.ySpeed = ball.ySpeed * 0.7;
 }
 
