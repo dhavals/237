@@ -10,6 +10,7 @@ var timerDelay = 10;
 // this is an array to ensure we can read multiple key presses at the same time!
 var keysPressed = new Object(); 
 
+
 function BallBounds(edgeUp, edgeDown, edgeLeft, edgeRight)
 {
     this.edgeUp = edgeUp;
@@ -42,34 +43,102 @@ function Player()
     this.score = 0;
 }
 
-var ball = new Ball(200, 200, 4, 4, 10);
+function DisplayPage(level)
+{
+    this.level = level;
+}
+
+var ball = new Ball(200, 200, 4, 4, 7);
+var ballHome1 = new Ball(250, 200, 3, 4, 7);
+var ballHome2 = new Ball(350, 250, -3, 5, 7);
+var ballHome3 = new Ball(10, 50, 3, -4, 7);
 var ballBounds = new BallBounds(0, canvasHeight, 0, canvasWidth);
-var paddle1 = new Paddle(20, (canvasHeight/2) - 50, 10, 100, 5, "one");
-var paddle2 = new Paddle(canvasWidth - 25 - 5, (canvasHeight/2) - 50, 10, 100, 5, "two");
+var paddle1 = new Paddle(25, (canvasHeight/2) - 50, 10, 100, 5, "one");
+var paddle2 = new Paddle(canvasWidth - 30 - 5, (canvasHeight/2) - 50, 10, 100, 5, "two");
 var player1 = new Player();
 var player2 = new Player();
+var page = new DisplayPage("home");
 var maxSpeed = 10;
 var minSpeed = 3;
 
-function redrawAll()
+function redrawHome()
 {
-    // erase everything -- not efficient, but simple
-    ctx.clearRect(0, 0, 800, 400);
-    
-    redrawBall();
-    redrawPaddles();
-    redrawScore();
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight); 
+
+    ctx.font = "60px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillText("PONG", canvasWidth/2 , canvasHeight/4);
+
+    ctx.font = "25px Arial";
+    ctx.fillText("Play", canvasWidth/2, canvasHeight/2);
+    ctx.fillText("Instructions", canvasWidth/2, canvasHeight/2 + 60);
 }
 
 
-function redrawBall() 
+function redrawInstructions()
+{
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight); 
+
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillText("Instructions", canvasWidth/2 , canvasHeight/8);
+}
+
+
+function redrawAll(ball)
+{
+    // erase everything -- not efficient, but simple
+    ctx.clearRect(0, 0, 800, 400);
+
+    redrawBackground()
+    redrawBall(ball);
+    redrawPaddles();
+    redrawScore();
+    redrawBoundary();
+}
+
+function redrawBoundary()
+{
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 10, canvasHeight);
+    ctx.fillRect(canvasWidth - 10, 0, 10, canvasHeight);
+
+}
+
+function redrawBackground()
+{
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.strokeStyle = "white";
+    ctx.moveTo(canvasWidth/2,0);
+    ctx.lineTo(canvasWidth/2,canvasHeight);
+    ctx.stroke();
+
+    function drawCircle(ctx, cx, cy, radius) 
+    {
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, 2*Math.PI, true);
+        ctx.closePath();
+        ctx.fillStyle = "white";
+        ctx.stroke();
+    }
+
+    drawCircle(ctx, canvasWidth/2, canvasHeight/2, canvasHeight/4);
+}
+
+function redrawBall(ball) 
 {    
     function drawCircle(ctx, cx, cy, radius) 
     {
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, 2*Math.PI, true);
         ctx.closePath();
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "yellow";
         ctx.fill();
     }
 
@@ -106,15 +175,22 @@ function redrawScore()
 
     ctx.font = "30px Arial";
     ctx.textAlign = "center";
-
-    ctx.strokeText(player1score, canvasWidth/2 - 50, 50);
-    ctx.strokeText(player2score, canvasWidth/2 + 20, 50);
+    ctx.fillStyle = "white";
+    ctx.fillText(player1score, canvasWidth/2 - 30, 50);
+    ctx.fillText(player2score, canvasWidth/2 + 30, 50);
 }
 
 function onKeyDown(event)
 {
     var currDown = 'key=' + event.keyCode;
     keysPressed[currDown] = event.keyCode;
+
+    if (page.level === "home"){
+        if (event.keyCode === 80 || event.keyCode === 112)
+            page.level = "play";
+        if (event.keyCode === 73 || event.keyCode === 105)
+            page.level = "instructions";
+    }
 }
 
 function onKeyUp(event)
@@ -122,6 +198,7 @@ function onKeyUp(event)
     var currUp = 'key=' + event.keyCode;
     keysPressed[currUp] = 0;  
 }
+
 
 function updatePaddles()
 {
@@ -152,16 +229,26 @@ function updatePaddles()
     };
 }
 
+
 function movePaddleUp(paddle)
 {
-    paddle.cy -= 7;
+    paddle.cy -= 4;
 }
 
 function movePaddleDown(paddle)
 {
-    paddle.cy += 7;
+    paddle.cy += 4;
 }
 
+
+function computerPlayer(ball, paddle)
+{
+    if (ball.cy < paddle.cy)
+        movePaddleUp(paddle);
+    if (ball.cy > (paddle.cy + paddle.paddleHeight))
+        movePaddleDown(paddle);
+
+}
 
 function isScore(ball) // checks if the ball has left the board and places it back in the center
 {
@@ -171,7 +258,9 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
         ball.xSpeed = -Math.floor((Math.random() * 3) + 3);
-	ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random())) ;
+        ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random())) ;
+        setTimeout(onTimer, timerDelay * 10);
+        return true;
     }
     
     if (ball.cx - ball.radius <= ballBounds.edgeLeft){
@@ -180,48 +269,22 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cx = canvasWidth/2;
         ball.cy = canvasHeight/2;
         ball.xSpeed = Math.floor((Math.random() * 3) + 3);
-	ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random()));
+        ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random()));
+        setTimeout(onTimer, timerDelay * 10);
+        return true;
     }
-}
-
-
-
-function isTouching() // checks if the ball is touching the paddles
-{
-    // if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
-    //     if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
-    //         return true;
-    // }
-
-    // if((ball.cx + ball.radius) === paddle2.cx){
-    //     if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
-    //         return true;
-    // }
-   
-    // return false;
-
-
-
-    if (touchingTop() === true)
-        return true;
-    if (touchingMiddleUp() == true)
-        return true;
-    if (touchingCenter() == true)
-        return true;
-    if (touchingMiddleDown() == true)
-        return true;
-    if (touchingBottom() == true)
-        return true;
 
     return false;
-}  
+}
+
+ 
 
 function bounceEdge()
 {
     // I thought that given the bounceMiddle(), it was fair that the ySpeed should increase too(?) 
     // You can change this back if you don't like it :D
     if(Math.abs(ball.xSpeed * 0.7) > minSpeed) {
-	ball.xSpeed = -0.7*ball.xSpeed;
+    ball.xSpeed = -0.7*ball.xSpeed;
     } else {
         ball.xSpeed = -ball.xSpeed;
     }
@@ -237,7 +300,7 @@ function bounceMiddle()
 {
     // I gave the ball a maximum xSpeed because when the ball became too fast, it went through the paddle
     if (Math.abs(ball.xSpeed*1.3) < maxSpeed) {
-	ball.xSpeed = -ball.xSpeed * 1.3;
+    ball.xSpeed = -ball.xSpeed * 1.3;
     } else {
         ball.xSpeed = -ball.xSpeed;
     }
@@ -247,12 +310,12 @@ function bounceMiddle()
 function touchingTop()
 {
     if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
-        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.2)) && ball.cy >= paddle1.cy)
+        if (ball.cy <= (paddle1.cy + (paddle1.paddleHeight * 0.2)) && (ball.cy + ball.radius) >= paddle1.cy)
             return true;
     }
 
     if((ball.cx + ball.radius) === paddle2.cx){
-        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.2)) && ball.cy >= paddle2.cy)
+        if (ball.cy <= (paddle2.cy + (paddle2.paddleHeight * 0.2)) && (ball.cy + ball.radius) >= paddle2.cy)
             return true;
     }
    
@@ -309,12 +372,12 @@ function touchingMiddleDown()
 function touchingBottom()
 {
     if((ball.cx - ball.radius) === (paddle1.cx + paddle1.paddleWidth)){
-        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.8)))
+        if ((ball.cy - ball.radius) <= (paddle1.cy + paddle1.paddleHeight) && ball.cy > (paddle1.cy + (paddle1.paddleHeight * 0.8)))
             return true;
     }
 
     if((ball.cx + ball.radius) === paddle2.cx){
-        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.8)))
+        if ((ball.cy - ball.radius) <= (paddle2.cy + paddle2.paddleHeight) && ball.cy > (paddle2.cy + (paddle2.paddleHeight * 0.8)))
             return true;
     }
    
@@ -323,27 +386,45 @@ function touchingBottom()
 
 
 
-
-
-
-
-
-function setNextBallLocation(ball, paddle1, paddle2)
+function BoundaryBouncePlay(ball)
 {
     if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
-        ball.ySpeed = -ball.ySpeed;
+        ball.ySpeed = -ball.ySpeed;    
+}
 
-    // if(isTouching()) // so the the balls bounce off the paddles
-    //     ball.xSpeed = -ball.xSpeed;
-    
 
+function BoundaryBounceHome(ball)
+{
+    if (ball.cy + ball.radius >= ballBounds.edgeDown || ball.cy - ball.radius <= ballBounds.edgeUp)
+        ball.ySpeed = -ball.ySpeed;  
+
+    if (ball.cx + ball.radius >= ballBounds.edgeRight || ball.cx - ball.radius <= ballBounds.edgeLeft)
+        ball.xSpeed = -ball.xSpeed;   
+}
+
+function PaddleBouncePlay(ball, paddle1, paddle2)
+{
     if (touchingTop() || touchingBottom())
         bounceEdge();
     if (touchingCenter())
         bounceCenter();
     if (touchingMiddleDown() || touchingMiddleUp())
         bounceMiddle();
+}
 
+function PaddleBounceHome(ball, paddle1, paddle2)
+{
+    return;
+}
+
+
+
+function setNextBallLocation(ball, paddle1, paddle2, boundaryBounceFn, paddleBounceFn)
+{
+    
+    boundaryBounceFn(ball);
+
+    paddleBounceFn(ball, paddle1, paddle2);
 
     ball.cx += ball.xSpeed;
     ball.cy += ball.ySpeed;
@@ -364,28 +445,77 @@ function setNextBallLocation(ball, paddle1, paddle2)
 
     // at this point, if the ball is inside the paddle, make it touch the paddle edge exactly. 
     if(((ball.cx - ball.radius) < (paddle1.cx + paddle1.paddleWidth)) && ((ball.cx - ball.radius) > paddle1.cx)){
-        if (ball.cy <= (paddle1.cy + paddle1.paddleHeight) && ball.cy >= paddle1.cy)
+        if ((ball.cy - ball.radius) <= (paddle1.cy + paddle1.paddleHeight) && (ball.cy + ball.radius) >= paddle1.cy)
             ball.cx = paddle1.cx + paddle1.paddleWidth + ball.radius;
     }
 
     if((ball.cx + ball.radius) > paddle2.cx && (ball.cx + ball.radius) < (paddle2.cx + paddle2.paddleWidth)){
-        if (ball.cy <= (paddle2.cy + paddle2.paddleHeight) && ball.cy >= paddle2.cy)
+        if ((ball.cy - ball.radius) <= (paddle2.cy + paddle2.paddleHeight) && (ball.cy + ball.radius) >= paddle2.cy)
             ball.cx = paddle2.cx - ball.radius;
     }
 
 }
 
+
+function Home()
+{
+
+    ctx.clearRect(0, 0, 800, 400);
+
+    setNextBallLocation(ballHome1, paddle1, paddle2, BoundaryBounceHome, PaddleBounceHome);
+    setNextBallLocation(ballHome2, paddle1, paddle2, BoundaryBounceHome, PaddleBounceHome);
+    setNextBallLocation(ballHome3, paddle1, paddle2, BoundaryBounceHome, PaddleBounceHome);
+    redrawHome();
+    redrawBall(ballHome1);
+    redrawBall(ballHome2);
+    redrawBall(ballHome3);
+
+}
+
+function Play()
+{
+    if (isScore(ball) === true)
+        return "score";
+    
+    // first find out the new coordinates of where to draw the ball
+    setNextBallLocation(ball, paddle1, paddle2, BoundaryBouncePlay, PaddleBouncePlay);
+    computerPlayer(ball, paddle1)
+    updatePaddles();
+    // then redraw it at that place
+    redrawAll(ball);  
+    return "notScore";
+}
+
+function Instructions()
+{
+    redrawInstructions();
+}
+
+
 function onTimer() // called every timerDelay millis
 {
 
-    isScore(ball);
-    // first find out the new coordinates of where to draw the ball
-    setNextBallLocation(ball, paddle1, paddle2);
-    updatePaddles();
-    // then redraw it at that place
-    redrawAll();
+    if (page.level === "home")
+        Home();
+    
+    if (page.level === "play")
+        if (Play() === "score")
+            return;
+
+    if (page.level == "instructions")
+        Instructions();
 
 
+    setTimeout(onTimer, timerDelay);
+
+}
+
+function onMouseMove(event) {
+    var x = event.pageX - canvas.offsetLeft;  // do not use event.x, it's not cross-browser!!!
+    var y = event.pageY - canvas.offsetTop;
+
+    if (y < (canvasHeight - paddle2.paddleHeight))
+    paddle2.cy = y;
 }
 
 function run() 
@@ -394,10 +524,11 @@ function run()
     canvas.setAttribute('tabindex','0');
     canvas.focus();
 
-    intervalId = setInterval(onTimer, timerDelay); // call onTimer every timerDelay millis
-    
+    setTimeout(onTimer, timerDelay);
+ 
     canvas.addEventListener('keyup', onKeyUp, false);
     canvas.addEventListener('keydown', onKeyDown, false);
+    canvas.addEventListener('mousemove', onMouseMove, false);
 }
 
 run();
