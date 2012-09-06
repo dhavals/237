@@ -41,7 +41,7 @@ function Paddle(cx, cy, width, height, radius, name)
 function Player()
 {
     this.score = 0;
-	this.control = "keyboard";
+    this.control = "keyboard";
 }
 
 function DisplayPage(level)
@@ -80,38 +80,81 @@ function redrawHome()
 
 function redrawSettings()
 {
-	ctx.fillStyle = "black";
-	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-	
-	ctx.font = "40px Arial";
-	ctx.textAlign = "center";
-	ctx.fillStyle = "white";
-	ctx.fillText("Settings", canvasWidth/2, canvasHeight/8);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillText("Settings", canvasWidth/2, canvasHeight/8);
 
-	ctx.font = "20px Arial";
-	ctx.fillText("Press:", canvasWidth/4, canvasHeight/4);
-	
-	if(settingState === "none"){
-		ctx.fillText("1) Computer vs Player", canvasWidth/2, canvasHeight*3/8);
-		ctx.fillText("2) Player vs Player", canvasWidth/2, canvasHeight*5/8);
-	}
-	
-	if(settingState === "CvP"){
-		ctx.fillText("1) Use Keyboard (Up/Down)", canvasWidth/2, canvasHeight*3/8);
-		ctx.fillText("2) Use Mouse (Up/Down)", canvasWidth/2, canvasHeight*5/8);
-		ctx.font = "12px Arial";
-		ctx.fillText("Press 'S' to Start!", canvasWidth*7/8, canvasHeight*7/8);
-	}
-	
-	if(settingState === "PvP"){
-		ctx.fillText("1) Mouse vs Keyboard", canvasWidth/2, canvasHeight*3/8);
-		ctx.fillText("2) Keyboard vs Mouse", canvasWidth/2, canvasHeight*4/8);
-		ctx.fillText("3) Keyboard vs Keyboard", canvasWidth/2, canvasHeight*5/8);
-		ctx.font = "12px Arial";
-		ctx.fillText("Press 'S' to Start!", canvasWidth*7/8, canvasHeight*7/8);
-	}
-	
-	
+    ctx.font = "20px Arial";
+    ctx.fillText("Press:", canvasWidth/4, canvasHeight/4);
+    
+    if(settingState === "none"){
+        ctx.fillText("1) Computer vs Player", canvasWidth/2, canvasHeight*3/8);
+        ctx.fillText("2) Player vs Player", canvasWidth/2, canvasHeight*5/8);
+    }
+    
+    if(settingState === "CvP"){
+        ctx.fillText("1) Use Keyboard (Up/Down)", canvasWidth/2, canvasHeight*3/8);
+        ctx.fillText("2) Use Mouse (Up/Down)", canvasWidth/2, canvasHeight*5/8);
+    }
+    
+    if(settingState === "PvP"){
+        ctx.fillText("1) Mouse vs Keyboard", canvasWidth/2, canvasHeight*3/8);
+        ctx.fillText("2) Keyboard vs Mouse", canvasWidth/2, canvasHeight*4/8);
+        ctx.fillText("3) Keyboard vs Keyboard", canvasWidth/2, canvasHeight*5/8);
+    }
+}
+
+
+function redrawPrePlay()
+{
+       ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white"; 
+    ctx.font = "20px Arial";
+
+    
+    
+    if(settingState === "CvP"){
+        if(player2.control === "keyboard"){
+            ctx.fillText("Use the up/down arrow keys to move the paddle", canvasWidth/2, canvasHeight*3/8);
+            ctx.font = "25px Arial";
+            ctx.fillText("Press 'S' to Start!", canvasWidth/2, canvasHeight*6/8);
+        }
+        if(player2.control === "mouse"){
+            ctx.fillText("Use the mouse to move the paddle", canvasWidth/2, canvasHeight*3/8);
+            ctx.font = "25px Arial";
+            ctx.fillText("Press 'S' to Start!", canvasWidth/2, canvasHeight*6/8);
+        }
+    }
+    
+    if(settingState === "PvP"){
+        if(player2.control === "keyboard" && player1.control === "keyboard"){
+            ctx.fillText("Player 1 : Use the w/s keys to move the paddle", canvasWidth/2, canvasHeight*3/8);
+            ctx.fillText("Player 2 : Use the up/down arrow keys to move the paddle", canvasWidth/2, canvasHeight*4/8);
+            ctx.font = "25px Arial";
+            ctx.fillText("Press 'S' to Start!", canvasWidth/2, canvasHeight*6/8);
+        }
+        if(player2.control === "mouse" && player1.control === "keyboard"){
+            ctx.fillText("Player 1 : Use the w/s keys to move the paddle", canvasWidth/2, canvasHeight*3/8);
+            ctx.fillText("Player 2 : Use the mouse to move the paddle", canvasWidth/2, canvasHeight*4/8);
+            ctx.font = "25px Arial";
+            ctx.fillText("Press 'S' to Start!", canvasWidth/2, canvasHeight*6/8);
+        }
+        if(player2.control === "keyboard" && player1.control === "mouse"){
+            ctx.fillText("Player 1 : Use the mouse to move the paddle", canvasWidth/2, canvasHeight*3/8);
+            ctx.fillText("Player 2 : Use the up/down arrow keys to move the paddle", canvasWidth/2, canvasHeight*4/8);
+            ctx.font = "25px Arial";
+            ctx.fillText("Press 'S' to Start!", canvasWidth/2, canvasHeight*6/8);
+        }
+
+    } 
 
 }
 
@@ -124,37 +167,37 @@ function redrawInstructions()
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
     ctx.fillText("Instructions", canvasWidth/2 , canvasHeight/8);
-	
-	ctx.font = "15px Arial";
-	ctx.fillText("This is a simple game of Pong!", canvasWidth/2, canvasHeight*4/16);
-	ctx.textAlign = "left";
-	ctx.fillText("First, choose your opponent (Computer vs Player or Player vs Player)", canvasWidth/4, canvasHeight*5/16);
-	ctx.fillText("Second, choose your controls (Mouse or Keyboard)", canvasWidth/4, canvasHeight*6/16);
-	ctx.fillText("Third, Play Pong!!!", canvasWidth/4, canvasHeight*7/16);
-	ctx.fillText("Your goal is to keep the ball from touching your end of the wall", canvasWidth/4, canvasHeight*9/16);
-	ctx.fillText("Use the edges of your paddle to make the ball go up/down more", canvasWidth/4, canvasHeight*10/16);
-	ctx.fillText("Use the center of the paddle to simply reflect the ball", canvasWidth/4, canvasHeight*11/16);
-	ctx.fillText("Use the space between the center and the edges to accelerate your ball!", canvasWidth/4, canvasHeight*12/16);
-	
-	
-	ctx.fillText("Press 'P' to Play!!!", canvasWidth*11/16, canvasHeight*14/16);
-	ctx.fillText("Press 'Q' to return to the Menu", canvasWidth*11/16, canvasHeight*15/16);
+    
+    ctx.font = "15px Arial";
+    ctx.fillText("This is a simple game of Pong!", canvasWidth/2, canvasHeight*4/16);
+    ctx.textAlign = "left";
+    ctx.fillText("First, choose your opponent (Computer vs Player or Player vs Player)", canvasWidth/4, canvasHeight*5/16);
+    ctx.fillText("Second, choose your controls (Mouse or Keyboard)", canvasWidth/4, canvasHeight*6/16);
+    ctx.fillText("Third, Play Pong!!!", canvasWidth/4, canvasHeight*7/16);
+    ctx.fillText("Your goal is to keep the ball from touching your end of the wall", canvasWidth/4, canvasHeight*9/16);
+    ctx.fillText("Use the edges of your paddle to make the ball go up/down more", canvasWidth/4, canvasHeight*10/16);
+    ctx.fillText("Use the center of the paddle to simply reflect the ball", canvasWidth/4, canvasHeight*11/16);
+    ctx.fillText("Use the space between the center and the edges to accelerate your ball!", canvasWidth/4, canvasHeight*12/16);
+    
+    
+    ctx.fillText("Press 'P' to Play!!!", canvasWidth*11/16, canvasHeight*14/16);
+    ctx.fillText("Press 'Q' to return to the Menu", canvasWidth*11/16, canvasHeight*15/16);
 }
 
 function redrawPause()
 {
-	ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-	ctx.font = "40px Arial"
-	ctx.textAlign = "center";
-	ctx.fillStyle = "white";
-	ctx.fillText("Paused", canvasWidth/8, canvasHeight/8);
-	
-	ctx.textAlign = "left";
-	ctx.font = "12px Arial";
-	ctx.fillText("Press 'R' to Return to Game", canvasWidth*6/8, canvasHeight*14/16);
-	ctx.fillText("Press 'Q' to Go to Menu", canvasWidth*6/8, canvasHeight*15/16);
+    ctx.font = "40px Arial"
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillText("Paused", canvasWidth/8, canvasHeight/8);
+    
+    ctx.textAlign = "left";
+    ctx.font = "12px Arial";
+    ctx.fillText("Press 'R' to Return to Game", canvasWidth*6/8, canvasHeight*14/16);
+    ctx.fillText("Press 'Q' to Go to Menu", canvasWidth*6/8, canvasHeight*15/16);
 
 }
 
@@ -260,75 +303,85 @@ function onKeyDown(event)
         if (event.keyCode === 73 || event.keyCode === 105)
             page.level = "instructions";
     }
-	
-	if (page.level === "instructions"){
-		if (event.keyCode === 80) 
-			page.level = "settings";
-		if (event.keyCode === 81)
-			page.level = "home";
-	}
-	
-	if (page.level === "settings") {
-		if (event.keyCode === 73)
-			page.level = "instructions";
-		if (event.keyCode === 49) {
-			if(settingState === "none"){
-				player1.control = "AI";
-				settingState = "CvP";
-			}
-			if(settingState === "CvP") {
-				player2.control = "keyboard";
-			}
-			if(settingState === "PvP"){
-				player1.control = "mouse";
-				player2.control = "keyboard";
-			}
-		}
-		if (event.keyCode === 50) {
-			if(settingState === "none")
-				settingState = "PvP";
-			if(settingState === "CvP"){
-				player2.control = "mouse";
-			}
-			if(settingState === "PvP"){
-				player1.control = "keyboard";
-				player2.control = "mouse";
-			}
-			
-		}
-		
-		if (event.keyCode === 51) {
-			if(settingState === "PvP"){
-				player1.control = "keyboard";
-				player2.control = "keyboard";
-			}	
-		}
-		
-		if (event.keyCode === 83) {
-			if(settingState === "CvP"){
-				page.level = "play";
-			} if (settingState === "PvP") {
-				page.level = "play";
-			}
-		}
-			
-	}
-			
-	if (page.level === "play"){
-		if (event.keyCode === 81)
-			page.level = "home";
-		if (event.keyCode === 80){
-			page.level = "pause";
-			Pause();
-		}
-	}
-	
-	if(page.level === "pause"){
-		if (event.keyCode === 82)
-			page.level = "play";
-		if (event.keyCode === 81)
-			page.level = "home";
-	}
+    
+    if (page.level === "instructions"){
+        if (event.keyCode === 80) 
+            page.level = "settings";
+        if (event.keyCode === 81)
+            page.level = "home";
+    }
+    
+    if (page.level === "settings") {
+
+        if (event.keyCode === 73)
+            page.level = "instructions";
+
+        if (event.keyCode === 49) {
+            if(settingState === "CvP") {
+                player2.control = "keyboard";
+                page.level = "preplay";
+            }
+
+            if(settingState === "none"){
+                player1.control = "AI";
+                settingState = "CvP";
+            }
+
+            if(settingState === "PvP"){
+                player1.control = "mouse";
+                player2.control = "keyboard";
+                page.level = "preplay";
+            }
+            
+
+        }
+        if (event.keyCode === 50) {
+
+            if(settingState === "CvP"){
+                player2.control = "mouse";
+                page.level = "preplay"
+            }
+            if(settingState === "PvP"){
+                player1.control = "keyboard";
+                player2.control = "mouse";
+                page.level = "preplay";
+            }
+            if(settingState === "none")
+                settingState = "PvP";
+            
+        }
+        
+        if (event.keyCode === 51) {
+            if(settingState === "PvP"){
+                player1.control = "keyboard";
+                player2.control = "keyboard";
+                page.level = "preplay";
+            }   
+        }
+            
+    }
+
+    if (page.level === "preplay"){
+        if (event.keyCode === 83){
+            page.level = "play";
+        }     
+    }
+            
+    if (page.level === "play"){
+        if (event.keyCode === 81)
+            page.level = "home";
+        if (event.keyCode === 80){
+            page.level = "pause";
+            Pause();
+        }
+    }
+    
+    if(page.level === "pause"){
+        if (event.keyCode === 82)
+            page.level = "play";
+        if (event.keyCode === 81)
+            page.level = "home";
+    }
 }
 
 function onKeyUp(event)
@@ -381,12 +434,12 @@ function movePaddleDown(paddle, speed)
 
 function computerPlayer(ball, paddle)
 {
-	if(player1.control === "AI"){
-		if (ball.cy < paddle.cy && ball.cx < canvasWidth * 0.75)
-			movePaddleUp(paddle, 4);
-		if (ball.cy > (paddle.cy + paddle.paddleHeight) && ball.cx < canvasWidth  * 0.75)
-			movePaddleDown(paddle, 4);
-	}
+    if(player1.control === "AI"){
+        if (ball.cy < paddle.cy && ball.cx < canvasWidth * 0.75)
+            movePaddleUp(paddle, 4);
+        if (ball.cy > (paddle.cy + paddle.paddleHeight) && ball.cx < canvasWidth  * 0.75)
+            movePaddleDown(paddle, 4);
+    }
 }
 
 function isScore(ball) // checks if the ball has left the board and places it back in the center
@@ -627,7 +680,7 @@ function Play()
 
 function Pause()
 {
-	redrawPause();
+    redrawPause();
 }
 
 function Instructions()
@@ -637,7 +690,7 @@ function Instructions()
 
 function Settings ()
 {
-	redrawSettings();
+    redrawSettings();
 }
 
 function onTimer() // called every timerDelay millis
@@ -646,15 +699,18 @@ function onTimer() // called every timerDelay millis
     if (page.level === "home")
         Home();
     
-	if (page.level === "settings")
-	    Settings();
-	
+    if (page.level === "settings")
+        Settings();
+    
     if (page.level === "play")
         if (Play() === "score")
             return;
-			
+            
     if (page.level == "instructions")
         Instructions();
+
+    if (page.level === "preplay")
+        redrawPrePlay();
 
 
     setTimeout(onTimer, timerDelay);
@@ -667,9 +723,9 @@ function onMouseMove(event) {
 
     if (y < (canvasHeight - paddle2.paddleHeight/2) && y > paddle2.paddleHeight/2 && player2.control === "mouse")
         paddle2.cy = (y - paddle2.paddleHeight/2);
-	if (y < (canvasHeight - paddle1.paddleHeight/2) && y > paddle1.paddleHeight/2 && player1.control === "mouse")
+    if (y < (canvasHeight - paddle1.paddleHeight/2) && y > paddle1.paddleHeight/2 && player1.control === "mouse")
         paddle1.cy = (y - paddle1.paddleHeight/2);
-	
+    
 }
 
 function run() 
