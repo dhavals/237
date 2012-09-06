@@ -246,7 +246,7 @@ function onKeyDown(event)
 				settingState = "CvP";
 			}
 			if(settingState === "CvP") {
-				player2.control = "mouse";
+				player2.control = "keyboard";
 			}
 			if(settingState === "PvP"){
 				player1.control = "mouse";
@@ -257,7 +257,7 @@ function onKeyDown(event)
 			if(settingState === "none")
 				settingState = "PvP";
 			if(settingState === "CvP"){
-				player2.control = "keyboard";
+				player2.control = "mouse";
 			}
 			if(settingState === "PvP"){
 				player1.control = "keyboard";
@@ -626,8 +626,11 @@ function onMouseMove(event) {
     var x = event.pageX - canvas.offsetLeft;  // do not use event.x, it's not cross-browser!!!
     var y = event.pageY - canvas.offsetTop;
 
-    if (y < (canvasHeight - paddle2.paddleHeight/2) && y > paddle2.paddleHeight/2)
+    if (y < (canvasHeight - paddle2.paddleHeight/2) && y > paddle2.paddleHeight/2 && player2.control === "mouse")
         paddle2.cy = (y - paddle2.paddleHeight/2);
+	if (y < (canvasHeight - paddle1.paddleHeight/2) && y > paddle1.paddleHeight/2 && player1.control === "mouse")
+        paddle1.cy = (y - paddle1.paddleHeight/2);
+	
 }
 
 function run() 
