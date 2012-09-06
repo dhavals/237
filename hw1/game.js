@@ -348,11 +348,12 @@ function movePaddleDown(paddle, speed)
 
 function computerPlayer(ball, paddle)
 {
-    if (ball.cy < paddle.cy && ball.cx < canvasWidth * 0.75)
-        movePaddleUp(paddle, 4);
-    if (ball.cy > (paddle.cy + paddle.paddleHeight) && ball.cx < canvasWidth  * 0.75)
-        movePaddleDown(paddle, 4);
-
+	if(player1.control === "AI"){
+		if (ball.cy < paddle.cy && ball.cx < canvasWidth * 0.75)
+			movePaddleUp(paddle, 4);
+		if (ball.cy > (paddle.cy + paddle.paddleHeight) && ball.cx < canvasWidth  * 0.75)
+			movePaddleDown(paddle, 4);
+	}
 }
 
 function isScore(ball) // checks if the ball has left the board and places it back in the center
