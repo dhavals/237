@@ -209,44 +209,44 @@ function updatePaddles()
         if (keysPressed[key] === 38) // up arrow / player2 up
         {
             if(paddle2.cy - paddle2.radius>= 0) // added these so the paddles don't out of bounds
-                movePaddleUp(paddle2);
+                movePaddleUp(paddle2, 4);
         }
         if (keysPressed[key] === 40) // down arrow / player2 down
         {
             if(paddle2.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
-                movePaddleDown(paddle2);
+                movePaddleDown(paddle2, 4);
         }
         if (keysPressed[key] === 87) // w / player1 up
         {
             if(paddle1.cy - paddle1.radius>= 0)
-                movePaddleUp(paddle1);
+                movePaddleUp(paddle1, 4);
         }
         if (keysPressed[key] === 83) // s / player1 down
         {
             if(paddle1.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
-                movePaddleDown(paddle1);
+                movePaddleDown(paddle1, 4);
         }
     };
 }
 
 
-function movePaddleUp(paddle)
+function movePaddleUp(paddle, speed)
 {
-    paddle.cy -= 4;
+    paddle.cy -= speed;
 }
 
-function movePaddleDown(paddle)
+function movePaddleDown(paddle, speed)
 {
-    paddle.cy += 4;
+    paddle.cy += speed;
 }
 
 
 function computerPlayer(ball, paddle)
 {
-    if (ball.cy < paddle.cy)
-        movePaddleUp(paddle);
-    if (ball.cy > (paddle.cy + paddle.paddleHeight))
-        movePaddleDown(paddle);
+    if (ball.cy < paddle.cy && ball.cx < canvasWidth * 0.75)
+        movePaddleUp(paddle, 4);
+    if (ball.cy > (paddle.cy + paddle.paddleHeight) && ball.cx < canvasWidth  * 0.75)
+        movePaddleDown(paddle, 4);
 
 }
 
