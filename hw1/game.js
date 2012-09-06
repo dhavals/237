@@ -354,12 +354,12 @@ function updatePaddles()
             if(paddle2.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
                 movePaddleDown(paddle2, 4);
         }
-        if (keysPressed[key] === 87 && player2.control === "keyboard") // w / player1 up
+        if (keysPressed[key] === 87 && player1.control === "keyboard") // w / player1 up
         {
             if(paddle1.cy - paddle1.radius>= 0)
                 movePaddleUp(paddle1, 4);
         }
-        if (keysPressed[key] === 83 && player2.control === "keyboard") // s / player1 down
+        if (keysPressed[key] === 83 && player1.control === "keyboard") // s / player1 down
         {
             if(paddle1.cy + paddle2.paddleHeight + paddle2.radius<= canvas.height)
                 movePaddleDown(paddle1, 4);
