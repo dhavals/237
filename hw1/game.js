@@ -99,6 +99,16 @@ function redrawSettings()
 	if(settingState === "CvP"){
 		ctx.fillText("1) Use Keyboard (Up/Down)", canvasWidth/2, canvasHeight*3/8);
 		ctx.fillText("2) Use Mouse (Up/Down)", canvasWidth/2, canvasHeight*5/8);
+		ctx.font = "12px Arial";
+		ctx.fillText("Press 'P' to play", canvasWidth*7/8, canvasHeight*7/8);
+	}
+	
+	if(settingState === "PvP"){
+		ctx.fillText("1) Mouse vs Keyboard", canvasWidth/2, canvasHeight*3/8);
+		ctx.fillText("2) Keyboard vs Mouse", canvasWidth/2, canvasHeight*4/8);
+		ctx.fillText("3) Keyboard vs Keyboard", canvasWidth/2, canvasHeight*5/8);
+		ctx.font = "12px Arial";
+		ctx.fillText("Press 'P' to play", canvasWidth*7/8, canvasHeight*7/8);
 	}
 	
 	
