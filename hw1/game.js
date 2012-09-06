@@ -100,7 +100,7 @@ function redrawSettings()
 		ctx.fillText("1) Use Keyboard (Up/Down)", canvasWidth/2, canvasHeight*3/8);
 		ctx.fillText("2) Use Mouse (Up/Down)", canvasWidth/2, canvasHeight*5/8);
 		ctx.font = "12px Arial";
-		ctx.fillText("Press 'P' to play", canvasWidth*7/8, canvasHeight*7/8);
+		ctx.fillText("Press 'S' to Start!", canvasWidth*7/8, canvasHeight*7/8);
 	}
 	
 	if(settingState === "PvP"){
@@ -108,7 +108,7 @@ function redrawSettings()
 		ctx.fillText("2) Keyboard vs Mouse", canvasWidth/2, canvasHeight*4/8);
 		ctx.fillText("3) Keyboard vs Keyboard", canvasWidth/2, canvasHeight*5/8);
 		ctx.font = "12px Arial";
-		ctx.fillText("Press 'P' to play", canvasWidth*7/8, canvasHeight*7/8);
+		ctx.fillText("Press 'S' to Start!", canvasWidth*7/8, canvasHeight*7/8);
 	}
 	
 	
@@ -139,10 +139,15 @@ function redrawInstructions()
 	
 	ctx.fillText("Press 'P' to Play!!!", canvasWidth*11/16, canvasHeight*14/16);
 	ctx.fillText("Press 'Q' to return to the Menu", canvasWidth*11/16, canvasHeight*15/16);
+}
+
+function redrawPause()
+{
+	ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
 
 }
-
 
 function redrawAll(ball)
 {
@@ -290,7 +295,7 @@ function onKeyDown(event)
 			}	
 		}
 		
-		if (event.keyCode === 80) {
+		if (event.keyCode === 83) {
 			if(settingState === "CvP"){
 				page.level = "play";
 			} if (settingState === "PvP") {
@@ -303,12 +308,14 @@ function onKeyDown(event)
 	if (page.level === "play"){
 		if (event.keyCode === 81)
 			page.level = "home";
-		if (event.keyCode === 80)
+		if (event.keyCode === 80){
 			page.level = "pause";
+			Pause();
+		}
 	}
 	
 	if(page.level === "pause"){
-		if (event.keyCode === 80)
+		if (event.keyCode === 82)
 			page.level = "play";
 		if (event.keyCode === 81)
 			page.level = "home";
@@ -609,6 +616,11 @@ function Play()
     return "notScore";
 }
 
+function Pause()
+{
+	redrawPause();
+}
+
 function Instructions()
 {
     redrawInstructions();
@@ -631,7 +643,7 @@ function onTimer() // called every timerDelay millis
     if (page.level === "play")
         if (Play() === "score")
             return;
-
+			
     if (page.level == "instructions")
         Instructions();
 
