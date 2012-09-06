@@ -41,6 +41,7 @@ function Paddle(cx, cy, width, height, radius, name)
 function Player()
 {
     this.score = 0;
+	this.control = "keyboard";
 }
 
 function DisplayPage(level)
@@ -58,6 +59,7 @@ var paddle2 = new Paddle(canvasWidth - 30 - 5, (canvasHeight/2) - 50, 10, 100, 5
 var player1 = new Player();
 var player2 = new Player();
 var page = new DisplayPage("home");
+var settingState = "none";
 var maxSpeed = 10;
 var minSpeed = 3;
 
@@ -72,10 +74,36 @@ function redrawHome()
     ctx.fillText("PONG", canvasWidth/2 , canvasHeight/4);
 
     ctx.font = "25px Arial";
-    ctx.fillText("Play", canvasWidth/2, canvasHeight/2);
-    ctx.fillText("Instructions", canvasWidth/2, canvasHeight/2 + 60);
+    ctx.fillText("Play (P to Play)", canvasWidth/2, canvasHeight/2);
+    ctx.fillText("Instructions (I for Instructions)", canvasWidth/2, canvasHeight/2 + 60);
 }
 
+function redrawSettings()
+{
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	
+	ctx.font = "40px Arial";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "white";
+	ctx.fillText("Settings", canvasWidth/2, canvasHeight/8);
+
+	ctx.font = "20px Arial";
+	ctx.fillText("Press:", canvasWidth/4, canvasHeight/4);
+	
+	if(settingState === "none"){
+		ctx.fillText("1) Computer vs Player", canvasWidth/2, canvasHeight*3/8);
+		ctx.fillText("2) Player vs Player", canvasWidth/2, canvasHeight*5/8);
+	}
+	
+	if(settingState === "CvP"){
+		ctx.fillText("1) Use Keyboard (Up/Down)", canvasWidth/2, canvasHeight*3/8);
+		ctx.fillText("2) Use Mouse (Up/Down)", canvasWidth/2, canvasHeight*5/8);
+	}
+	
+	
+
+}
 
 function redrawInstructions()
 {
@@ -187,10 +215,77 @@ function onKeyDown(event)
 
     if (page.level === "home"){
         if (event.keyCode === 80 || event.keyCode === 112)
-            page.level = "play";
+            page.level = "settings";
         if (event.keyCode === 73 || event.keyCode === 105)
             page.level = "instructions";
     }
+	
+	if (page.level === "instructions"){
+		if (event.keyCode === 80) 
+			page.level = "settings";
+		if (event.keyCode === 81)
+			page.level = "home";
+	}
+	
+	if (page.level === "settings") {
+		if (event.keyCode === 73)
+			page.level = "instructions";
+		if (event.keyCode === 49) {
+			if(settingState === "none"){
+				player1.control = "AI";
+				settingState = "CvP";
+			}
+			if(settingState === "CvP") {
+				player2.control = "mouse";
+			}
+			if(settingState === "PvP"){
+				player1.control = "mouse";
+				player2.control = "keyboard";
+			}
+		}
+		if (event.keyCode === 50) {
+			if(settingState === "none")
+				settingState = "PvP";
+			if(settingState === "CvP"){
+				player2.control = "keyboard";
+			}
+			if(settingState === "PvP"){
+				player1.control = "keyboard";
+				player2.control = "mouse";
+			}
+			
+		}
+		
+		if (event.keyCode === 51) {
+			if(settingState === "PvP"){
+				player1.control = "keyboard";
+				player2.control = "mouse";
+			}	
+		}
+		
+		if (event.keyCode === 80) {
+			if(settingState === "CvP"){
+				page.level = "play";
+			} if (settingState === "PvP") {
+				page.level = "play";
+			}
+		}
+			
+	}
+			
+	if (page.level === "play"){
+		if (event.keyCode === 81)
+			page.level = "home";
+		if (event.keyCode === 80)
+			page.level = "pause";
+	}
+	
+	if(page.level === "pause"){
+		if (event.keyCode === 80)
+			page.level = "play";
+		if (event.keyCode === 81)
+			page.level = "home";
+	}
 }
 
 function onKeyUp(event)
@@ -491,6 +586,10 @@ function Instructions()
     redrawInstructions();
 }
 
+function Settings ()
+{
+	redrawSettings();
+}
 
 function onTimer() // called every timerDelay millis
 {
@@ -498,6 +597,9 @@ function onTimer() // called every timerDelay millis
     if (page.level === "home")
         Home();
     
+	if (page.level === "settings")
+	    Settings();
+	
     if (page.level === "play")
         if (Play() === "score")
             return;
