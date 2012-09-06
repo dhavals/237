@@ -124,6 +124,23 @@ function redrawInstructions()
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
     ctx.fillText("Instructions", canvasWidth/2 , canvasHeight/8);
+	
+	ctx.font = "15px Arial";
+	ctx.fillText("This is a simple game of Pong!", canvasWidth/2, canvasHeight*4/16);
+	ctx.textAlign = "left";
+	ctx.fillText("First, choose your opponent (Computer vs Player or Player vs Player)", canvasWidth/4, canvasHeight*5/16);
+	ctx.fillText("Second, choose your controls (Mouse or Keyboard)", canvasWidth/4, canvasHeight*6/16);
+	ctx.fillText("Third, Play Pong!!!", canvasWidth/4, canvasHeight*7/16);
+	ctx.fillText("Your goal is to keep the ball from touching your end of the wall", canvasWidth/4, canvasHeight*9/16);
+	ctx.fillText("Use the sides of your paddle to make the ball go up/down more", canvasWidth/4, canvasHeight*10/16);
+	ctx.fillText("Use the center of the paddle to simply reflect the ball", canvasWidth/4, canvasHeight*11/16);
+	ctx.fillText("Use the space between the center and the edges to accelerate your ball!", canvasWidth/4, canvasHeight*12/16);
+	
+	
+	ctx.fillText("Press 'P' to Play!!!", canvasWidth*11/16, canvasHeight*14/16);
+	ctx.fillText("Press 'Q' to return to the Menu", canvasWidth*11/16, canvasHeight*15/16);
+
+
 }
 
 
