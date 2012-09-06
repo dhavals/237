@@ -269,7 +269,7 @@ function onKeyDown(event)
 		if (event.keyCode === 51) {
 			if(settingState === "PvP"){
 				player1.control = "keyboard";
-				player2.control = "mouse";
+				player2.control = "keyboard";
 			}	
 		}
 		
