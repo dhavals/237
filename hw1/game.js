@@ -514,8 +514,8 @@ function onMouseMove(event) {
     var x = event.pageX - canvas.offsetLeft;  // do not use event.x, it's not cross-browser!!!
     var y = event.pageY - canvas.offsetTop;
 
-    if (y < (canvasHeight - paddle2.paddleHeight))
-    paddle2.cy = y;
+    if (y < (canvasHeight - paddle2.paddleHeight/2) && y > paddle2.paddleHeight/2)
+        paddle2.cy = (y - paddle2.paddleHeight/2);
 }
 
 function run() 
