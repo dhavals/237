@@ -143,9 +143,18 @@ function redrawInstructions()
 
 function redrawPause()
 {
-	ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+	ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+	ctx.font = "40px Arial"
+	ctx.textAlign = "center";
+	ctx.fillStyle = "white";
+	ctx.fillText("Paused", canvasWidth/8, canvasHeight/8);
+	
+	ctx.textAlign = "left";
+	ctx.font = "12px Arial";
+	ctx.fillText("Press 'R' to Return to Game", canvasWidth*6/8, canvasHeight*14/16);
+	ctx.fillText("Press 'Q' to Go to Menu", canvasWidth*6/8, canvasHeight*15/16);
 
 }
 
