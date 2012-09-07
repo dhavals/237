@@ -394,6 +394,7 @@ function restartGame()
     player1.score = 0;
     player2.score = 0;
 
+    powerUpBigPaddle.isActive = false;
 }
 
 
@@ -571,7 +572,7 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cy = canvasHeight/2;
         ball.xSpeed = -Math.floor((Math.random() * 3) + 3);
         ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random())) ;
-        setTimeout(onTimer, timerDelay * 20);
+        setTimeout(onTimer, timerDelay * 10);
         return true;
     }
     
@@ -582,7 +583,7 @@ function isScore(ball) // checks if the ball has left the board and places it ba
         ball.cy = canvasHeight/2;
         ball.xSpeed = Math.floor((Math.random() * 3) + 3);
         ball.ySpeed = Math.floor((Math.random() * 3) + 3)*Math.pow(-1, Math.round(Math.random()));
-        setTimeout(onTimer, timerDelay * 20);
+        setTimeout(onTimer, timerDelay * 10);
         // if (player2.score === 5){
         //     page.level = "gameover";
         //     redrawGameOver();
